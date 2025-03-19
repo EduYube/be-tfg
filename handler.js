@@ -1,5 +1,6 @@
 const url = require('url');
 const stringDecoder = require('string_decoder').StringDecoder;
+const router = require('./router');
 
 module.exports = (req,res) => {
 
@@ -10,6 +11,7 @@ module.exports = (req,res) => {
     const pathClean = path.replace(/^\/+|\/+$/g, '');
     const decoder = new stringDecoder('utf-8');
     let buffer ='';
+    const method = req.method.toLowerCase()
 
     req.on('data', (data) => {
         buffer += decoder.write(data);
@@ -23,14 +25,14 @@ module.exports = (req,res) => {
         res.setHeader("Access-Control-Request-Methods", "*");
         res.setHeader("Access-Control-Allow-Headers", "*");
         res.setHeader("Access-Control-Allow-Methods", "*");
-        if(req.method.toLowerCase() === 'options'){
+        if(method === 'options'){
             res.writeHead(200);
             res.end();
             return;
         }
         const data = {
             path: pathClean, 
-            method: req.method.toLowerCase(),
+            method: method,
             query: urlParsed.query,
             header: req.headers,
             payload: buffer,
@@ -39,8 +41,8 @@ module.exports = (req,res) => {
         let handler;
         if(pathClean === '') {
             handler = router.main;
-        } else if(pathClean && router[pathClean]){
-            handler = router[mainPath]
+        } else if(pathClean && router[pathClean][method]){
+            handler = router[mainPath][method];
         } else {
             handler = router.notFound;
         }
