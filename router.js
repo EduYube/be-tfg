@@ -1,3 +1,5 @@
+const provincias = require('./provincias')
+
 module.exports = {
     main: (_, callback) => {
         callback(200, {message: 'Hola Mundo'})
@@ -5,4 +7,5 @@ module.exports = {
     notFound: (_, callback) => {
         callback(404, {message: 'No encontrado'})
     },
+    provincias,
 }
