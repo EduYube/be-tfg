@@ -36,15 +36,6 @@ module.exports = (req,res) => {
             payload: buffer,
         }
 
-        const router = {
-            main: (data, callback) => {
-                callback(200, {message: 'Hola Mundo'})
-            },
-            notFound: (data, callback) => {
-                callback(404, {message: 'No encontrado'})
-            },
-        }
-
         let handler;
         if(pathClean === '') {
             handler = router.main;
