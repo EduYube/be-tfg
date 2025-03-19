@@ -1,4 +1,4 @@
-const provincias = require('./provincias')
+const provincias = require('./endpoints/provincias')
 
 module.exports = {
     main: (_, callback) => {
