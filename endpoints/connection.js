@@ -34,6 +34,12 @@ connection.connect((err) => {
             return;
         }
     });
+    connection.query('CREATE TABLE IF NOT EXISTS comentarios (id INT AUTO_INCREMENT PRIMARY KEY, texto VARCHAR(200))', (err) => {
+        if(err){
+            console.log('Error al crear la tabla comentarios', err);
+            return;
+        }
+    });
     console.log('Conectado a la base de datos');
 });
 
