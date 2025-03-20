@@ -28,6 +28,12 @@ connection.connect((err) => {
             return;
         }
     });
+    connection.query('CREATE TABLE IF NOT EXISTS ciudades (id INT AUTO_INCREMENT PRIMARY KEY, nombre VARCHAR(50), provinciaId INT, CONSTRAINT FK_ProvinciaCiudad FOREIGN KEY (provinciaId) REFERENCES provincias(id))', (err) => {
+        if(err){
+            console.log('Error al crear la tabla ciudades', err);
+            return;
+        }
+    });
     console.log('Conectado a la base de datos');
 });
 
