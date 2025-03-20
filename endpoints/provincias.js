@@ -9,10 +9,18 @@ function checkError(err) {
 
 module.exports = {
     get: (data, callback) => {
+        const {id} = data;
+        if(id){
+            connection.query('SELECT * FROM provincias WHERE id = ?', [id], (err, rows) => {
+                checkError(err);
+                callback(200, rows[0]);
+            })
+            return;
+        } else {
         connection.query('SELECT * FROM provincias', (err, rows) => {
             checkError(err);
             callback(200, rows);
-        })
+        })}
     },
     post: (data, callback) => {
         const {nombre} = data.payload;
