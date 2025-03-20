@@ -1,6 +1,7 @@
 const provincias = require('./endpoints/provincias')
 const ciudades = require('./endpoints/ciudades')
 const comentarios = require('./endpoints/comentarios')
+const usuarios = require('./endpoints/usuarios')
 
 module.exports = {
     main: (_, callback) => {
@@ -11,5 +12,6 @@ module.exports = {
     },
     provincias,
     ciudades,
-    comentarios
+    comentarios,
+    usuarios
 }
