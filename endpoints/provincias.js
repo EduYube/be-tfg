@@ -26,14 +26,23 @@ module.exports = {
         })
     },
     put: (data, callback) => {
-        const {id, nombre} = data.payload;
+        const {nombre} = data.payload;
+        const id = data.id;
+        if(!nombre || !id){
+            callback(400, {message: 'Asegurate de que el nombre o el id no son nulos'});
+            return;
+        }
         connection.query('UPDATE provincias SET nombre = ? WHERE id = ?', [nombre, id], (err) => {
             checkError(err);
             callback(200, {message: 'Provincia actualizada correctamente'});
         })
     },
     delete: (data, callback) => {
-        const {id} = data.payload;
+        const id = data.id;
+        if(!id){
+            callback(400, {message: 'el id no puede ser nulo'});
+            return;
+        }
         connection.query('DELETE FROM provincias WHERE id = ?', [id], (err) => {
             checkError(err);
             callback(200, {message: 'Provincia eliminada correctamente'});

@@ -11,7 +11,14 @@ module.exports = (req,res) => {
     const pathClean = path.replace(/^\/+|\/+$/g, '');
     const decoder = new stringDecoder('utf-8');
     let buffer ='';
+    let id = null;
+    let mainPath = pathClean;
     const method = req.method.toLowerCase()
+
+    if(pathClean.indexOf('/') > -1){ 
+        id = pathClean.split('/') [1];
+        mainPath = pathClean.split('/') [0];
+    }
 
     req.on('data', (data) => {
         buffer += decoder.write(data);
@@ -31,7 +38,8 @@ module.exports = (req,res) => {
             return;
         }
         const data = {
-            path: pathClean, 
+            id: id,
+            path: mainPath, 
             method: method,
             query: urlParsed.query,
             header: req.headers,
@@ -39,9 +47,9 @@ module.exports = (req,res) => {
         }
 
         let handler;
-        if(pathClean === '') {
+        if(mainPath === '') {
             handler = router.main;
-        } else if(pathClean && router[pathClean][method]){
+        } else if(mainPath && router[mainPath][method]){
             handler = router[mainPath][method];
         } else {
             handler = router.notFound;
