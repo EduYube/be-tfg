@@ -18,11 +18,10 @@ module.exports = {
             }
             rows.filter( (usuario) => {
                 if (usuario.nick == nick && usuario.password == password) {
-                    return callback (200, "Credenciales correctas")
-                } else {
-                    return callback (404, {message:'Usuario no encontrado'})
+                    return callback (200, {message: 'Credenciales correctas'})
                 }
             })
+            return callback (404, {message:'Usuario no encontrado'})
         })
     },
     post: (data, callback) => {
@@ -42,7 +41,8 @@ module.exports = {
             } else if(data.payload) {
                 let find = false;
                 rows.filter((usuario) => { 
-                    if (usuario.nick == data.payload.nick && usuario.password == data.payload.password) {
+                    const user = {nick: data.payload.nick, password: data.payload.password}
+                    if (usuario.nick == user.nick && usuario.password == data.payload.password) {
                         find = true;
                         callback (200,  usuario)
                         return;
