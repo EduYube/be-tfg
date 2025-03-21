@@ -18,7 +18,7 @@ module.exports = {
             }
             rows.filter( (usuario) => {
                 if (usuario.nick == nick && usuario.password == password) {
-                    return callback (200, "Credenciales correctas")
+                    return callback (200, {message: 'Credenciales correctas'})
                 } else {
                     return callback (404, {message:'Usuario no encontrado'})
                 }
@@ -27,7 +27,6 @@ module.exports = {
     },
     post: (data, callback) => {
         connection.query('SELECT * FROM usuarios', (err,rows) => {
-            console.log(data.payload)
             checkError(err);
             if(data.payload.creation){
                 const user = {nick: data.payload.nick, password: data.payload.password}
