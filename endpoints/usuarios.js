@@ -19,8 +19,6 @@ module.exports = {
             rows.filter( (usuario) => {
                 if (usuario.nick == nick && usuario.password == password) {
                     return callback (200, {message: 'Credenciales correctas'})
-                } else {
-                    return callback (404, {message:'Usuario no encontrado'})
                 }
             })
             return callback (404, {message:'Usuario no encontrado'})

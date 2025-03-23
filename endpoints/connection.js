@@ -45,6 +45,11 @@ connection.connect((err) => {
             return
         }
     });
+    connection.query('CREATE TABLE IF NOT EXISTS publicaciones (id INT AUTO_INCREMENT PRIMARY KEY, img VARCHAR(200), text VARCHAR(200), provinciaId INT, ciudadId INT, favorito BOOLEAN, guardado BOOLEAN, comentarioId INT, CONSTRAINT FK_ProvinciaPublicacion FOREIGN KEY (provinciaId) REFERENCES provincias(id), CONSTRAINT FK_CiudadPublicacion FOREIGN KEY (ciudadId) REFERENCES ciudades(id), CONSTRAINT FK_ComentarioPublicacion FOREIGN KEY (comentarioId) REFERENCES comentarios(id))', (err) => {
+        if(err){
+            return
+        }
+    });
     console.log('Conectado a la base de datos');
 });
 
