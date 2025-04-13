@@ -10,22 +10,35 @@ function checkError(err) {
 module.exports = {
     get: (data, callback) => {
         const {id} = data;
-        if(id){
-            if(isNaN(parseInt(id))){
-                callback(400, {message: 'El id debe ser un número'});
-                return;
-            } else {
-                connection.query('SELECT * FROM ciudades WHERE id = ?', [id], (err, rows) => {
-                    checkError(err);
-                    callback(200, rows[0]);
-                })
-                return;           
-            }
-        } else {
-        connection.query('SELECT * FROM ciudades', (err, rows) => {
+        connection.query('SELECT c.id, c.name, p.name AS provincia FROM provincias p INNER JOIN ciudades c ON p.id = c.provinciaId ORDER BY c.id', (err, rows) => {
             checkError(err);
-            callback(200, rows);
-        })}
+            if(id){
+                if(isNaN(parseInt(id))){
+                    callback(400, {message: 'El id debe ser un número'});
+                    return;
+                } else {
+                    let city;
+                    rows.filter((ciudad) => {
+                        if(ciudad.id == id){connection.query('SELECT c.name, p.name FROM provincias p INNER JOIN ciudades c ON p.id = c.provinciaId WHERE c.id = ?', ciudad.id, (err, rows) => {
+                            checkError(err);
+                            city = {
+                                id: ciudad.id,
+                                name: ciudad.name,
+                                provincia: rows[0].name
+                            }
+                            if(city){
+                                return callback (200, city)
+                            } else {
+                                return callback (404, {message:'Ciudad no encontrada'})
+                            }
+                        });
+                        }
+                    })         
+                }
+            } else {
+                return callback(200, rows);
+            }
+        })
     },
     post: (data, callback) => {
         const {nombre} = data.payload;
