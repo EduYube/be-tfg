@@ -15,9 +15,9 @@ module.exports = {
                 callback(400, {message: 'El id debe ser un número'});
                 return;
             } else {
-                connection.query('SELECT * FROM comentarios WHERE id = ?', [id], (err, rows) => {
+                connection.query('SELECT * FROM comentarios WHERE publicacionId = ?', [id], (err, rows) => {
                     checkError(err);
-                    callback(200, rows[0]);
+                    callback(200, rows);
                 })
                 return;           
             }
@@ -28,12 +28,12 @@ module.exports = {
         })}
     },
     post: (data, callback) => {
-        const {texto} = data.payload;
+        const {texto, id, user} = data.payload;
         if(!texto){
             callback(400, {message: 'El texto del comentario no puede ser nulo'});
             return;
         }
-        connection.query('INSERT INTO comentarios (texto) VALUES (?)', [texto], (err) => {
+        connection.query('INSERT INTO comentarios (texto,publicacionId,usuario) VALUES (?,?,?)', [texto,id,user], (err) => {
             checkError(err);
             callback(201, {message: 'Comentario creado correctamente'});
         })
