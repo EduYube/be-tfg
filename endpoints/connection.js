@@ -40,7 +40,7 @@ connection.connect((err) => {
             return;
         }
     });
-    connection.query('CREATE TABLE IF NOT EXISTS usuarios (nick VARCHAR(25) PRIMARY KEY, password VARCHAR(25), admin BOOLEAN, guardadoId INT, CONSTRAINT FK_GuardadoUsuario FOREIGN KEY (guardadoId) REFERENCES guardados(publicacionId))', (err) => {
+    connection.query('CREATE TABLE IF NOT EXISTS usuarios (nick VARCHAR(25) PRIMARY KEY, password VARCHAR(25), admin BOOLEAN, guardadoId INT)', (err) => {
         if(err){
             return
         }

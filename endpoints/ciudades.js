@@ -10,7 +10,7 @@ function checkError(err) {
 module.exports = {
     get: (data, callback) => {
         const {id} = data;
-        connection.query('SELECT c.id, c.name, p.name AS provincia FROM provincias p INNER JOIN ciudades c ON p.id = c.provinciaId ORDER BY c.id', (err, rows) => {
+        connection.query('SELECT c.id, c.nombre, p.nombre AS provincia FROM provincias p INNER JOIN ciudades c ON p.id = c.provinciaId ORDER BY c.id', (err, rows) => {
             checkError(err);
             if(id){
                 if(isNaN(parseInt(id))){
@@ -19,12 +19,12 @@ module.exports = {
                 } else {
                     let city;
                     rows.filter((ciudad) => {
-                        if(ciudad.id == id){connection.query('SELECT c.name, p.name FROM provincias p INNER JOIN ciudades c ON p.id = c.provinciaId WHERE c.id = ?', ciudad.id, (err, rows) => {
+                        if(ciudad.id == id){connection.query('SELECT c.nombre, p.nombre FROM provincias p INNER JOIN ciudades c ON p.id = c.provinciaId WHERE c.id = ?', ciudad.id, (err, rows) => {
                             checkError(err);
                             city = {
                                 id: ciudad.id,
-                                name: ciudad.name,
-                                provincia: rows[0].name
+                                nombre: ciudad.nombre,
+                                provincia: rows[0].nombre
                             }
                             if(city){
                                 return callback (200, city)
@@ -41,12 +41,12 @@ module.exports = {
         })
     },
     post: (data, callback) => {
-        const {nombre} = data.payload;
+        const {nombre, provinciaId} = data.payload;
         if(!nombre){
             callback(400, {message: 'El nombre de la ciudad no puede ser nulos'});
             return;
         }
-        connection.query('INSERT INTO ciudades (nombre) VALUES (?)', [nombre], (err) => {
+        connection.query('INSERT INTO ciudades (nombre, provinciaId) VALUES (?, (SELECT id FROM provincias WHERE nombre = ?))', [nombre, provinciaId], (err) => {
             checkError(err);
             callback(201, {message: 'Ciudad creada correctamente'});
         })

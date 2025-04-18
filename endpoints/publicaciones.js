@@ -11,15 +11,21 @@ function checkError(err) {
 module.exports = {
         get:(data, callback) => {
             const {id} = data;
+            const ciudad = decodeURIComponent(id)
           connection.query('SELECT * FROM publicaciones', (err, rows) => {
                 checkError(err);
-                if(!isNaN(parseInt(id))){
+                if(ciudad){
+                    let find = false;
                     rows.filter( (publicacion) => {
-                        if (publicacion.id == id) {
+                        if (publicacion.img == ciudad) {
+                            find = true;
                             return callback (200, publicacion)
                         }
                     })
-                    return callback (404, {message:'Publicacion no encontrada'})
+                    if(!find){
+                        callback (404, {message:'Publicacion no encontrada'})
+                        return
+                    }
                 }else{
                     callback (200, rows)
                 }
@@ -32,6 +38,7 @@ module.exports = {
                 'provinciaId = (SELECT id FROM provincias WHERE nombre = ? LIMIT 1), img = ?', 
                 [texto, ciudad, provincia, img],
                 (err, _) => {
+                    console.log( ">>>>>>>>>>>>>>>>>>>> error ", err);
                     checkError(err);
                     callback (201, {message: 'Se ha posteado la publicacion'})
             })

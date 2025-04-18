@@ -33,7 +33,7 @@ module.exports = {
             callback(400, {message: 'El nombre de la provincia no puede ser nulos'});
             return;
         }
-        connection.query('INSERT INTO provincias (name) VALUES (?)', [nombre], (err) => {
+        connection.query('INSERT INTO provincias (nombre) VALUES (?)', [nombre], (err) => {
             checkError(err);
             callback(201, {message: 'Provincia creada correctamente'});
         })
@@ -45,7 +45,7 @@ module.exports = {
             callback(400, {message: 'Asegurate de que el nombre o el id no son nulos'});
             return;
         }
-        connection.query('UPDATE provincias SET name = ? WHERE id = ?', [nombre, id], (err) => {
+        connection.query('UPDATE provincias SET nombre = ? WHERE id = ?', [nombre, id], (err) => {
             checkError(err);
             return callback(200, {message: 'Provincia actualizada correctamente'});
         })
