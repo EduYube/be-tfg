@@ -11,17 +11,29 @@ function checkError(err) {
 module.exports = {
         get:(data, callback) => {
             const {id} = data;
-            const ciudad = decodeURIComponent(id)
-          connection.query('SELECT * FROM publicaciones', (err, rows) => {
+            connection.query('SELECT * FROM publicaciones', (err, rows) => {
                 checkError(err);
-                if(ciudad){
+                if(id){
                     let find = false;
-                    rows.filter( (publicacion) => {
-                        if (publicacion.img == ciudad) {
-                            find = true;
-                            return callback (200, publicacion)
-                        }
-                    })
+                    console.log(">>>>>>>>>>> ", id);
+                    if(isNaN(parseInt(id))){
+                        const ciudad = decodeURIComponent(id)
+                        rows.filter( (publicacion) => {
+                            console.log(">>>>>>>>>>> !isNaN", publicacion);
+                            if (publicacion.img == ciudad) {
+                                find = true;
+                                return callback (200, publicacion)
+                            }
+                        })
+                    } else {
+                        rows.filter( (publicacion) => {
+                            console.log(">>>>>>>>>>> isNaN", publicacion);
+                            if (publicacion.id == id) {
+                                find = true;
+                                return callback (200, publicacion)
+                            }
+                        })
+                    }
                     if(!find){
                         callback (404, {message:'Publicacion no encontrada'})
                         return
@@ -29,7 +41,7 @@ module.exports = {
                 }else{
                     callback (200, rows)
                 }
-          })
+            })
         },
         post:(data, callback) => {
             const {texto, ciudad, provincia, img} = data.payload;
