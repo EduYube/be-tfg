@@ -15,11 +15,9 @@ module.exports = {
                 checkError(err);
                 if(id){
                     let find = false;
-                    console.log(">>>>>>>>>>> ", id);
                     if(isNaN(parseInt(id))){
                         const ciudad = decodeURIComponent(id)
                         rows.filter( (publicacion) => {
-                            console.log(">>>>>>>>>>> !isNaN", publicacion);
                             if (publicacion.img == ciudad) {
                                 find = true;
                                 return callback (200, publicacion)
@@ -27,7 +25,6 @@ module.exports = {
                         })
                     } else {
                         rows.filter( (publicacion) => {
-                            console.log(">>>>>>>>>>> isNaN", publicacion);
                             if (publicacion.id == id) {
                                 find = true;
                                 return callback (200, publicacion)
@@ -50,7 +47,6 @@ module.exports = {
                 'provinciaId = (SELECT id FROM provincias WHERE nombre = ? LIMIT 1), img = ?', 
                 [texto, ciudad, provincia, img],
                 (err, _) => {
-                    console.log( ">>>>>>>>>>>>>>>>>>>> error ", err);
                     checkError(err);
                     callback (201, {message: 'Se ha posteado la publicacion'})
             })
