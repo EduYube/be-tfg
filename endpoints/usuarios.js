@@ -8,20 +8,15 @@ function checkError(err) {
 }
 
 module.exports = {
-    get: (data, callback) => {
+    get: (_, callback) => {
         connection.query('SELECT * FROM usuarios', (err, rows) => {
-            const {nick, password} = data.payload;
             checkError(err);
-            if(!nick && !password){
-                callback(400, {message: 'Las dos credenciales son necesarias'});
-                return;
-            }
-            rows.filter( (usuario) => {
-                if (usuario.nick == nick && usuario.password == password) {
-                    return callback (200, {message: 'Credenciales correctas'})
+            const result = rows.filter((usuario) => {
+                if(usuario.deleted != 1){
+                    return usuario;
                 }
             })
-            return callback (404, {message:'Usuario no encontrado'})
+            return callback(200, result);
         })
     },
     post: (data, callback) => {
@@ -59,8 +54,9 @@ module.exports = {
        
     },
     put: (data, callback) => {
-        const user = {nick: data.payload.nick, password: data.payload.password}
-        connection.query('UPDATE usuarios SET ? WHERE nick = ?', [user, user.nick], (err, _rows) => {
+        const user = {nick: data.payload.nick, password: data.payload.password, admin: data.payload.admin}
+        const oldNick = data.payload.oldNick;
+        connection.query('UPDATE usuarios SET ? WHERE nick = ?', [user, oldNick], (err, _rows) => {
             if (err){
                 callback (500, {message: 'La conexion ha fallado'})
                 return
@@ -71,13 +67,9 @@ module.exports = {
     },
     delete: (data, callback) =>{
         const {nick} = data.payload;
-        connection.query('DELETE FROM usuarios WHERE nick = ?', nick, (err, _rows) => {
-            if(err){
-                callback (500, {message: 'La conexion ha fallado'})
-                return
-            }else{
-                callback (200, {message: 'Se ha eliminado la provincia'})
-            } 
+        connection.query('UPDATE usuarios SET deleted = 1 WHERE nick = ?', nick, (err, _rows) => {
+            checkError(err);
+            callback (200, {message: 'Se ha eliminado el usuario'})
         })
     }
 }
