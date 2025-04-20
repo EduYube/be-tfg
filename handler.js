@@ -54,6 +54,7 @@ module.exports = (req,res) => {
         } else {
             handler = router.notFound;
         }
+
         if(typeof handler==='function'){
             handler(data, callback = (statusCode = 200, payload = {})=> {
              const payloadClean = JSON.stringify(payload);

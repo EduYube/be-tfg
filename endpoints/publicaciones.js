@@ -3,43 +3,34 @@ const connection = require ('./connection')
 
 function checkError(err) {
     if(err){
-        callback(500, {message: 'Error en la base de datos'})
-        return;
+        return callback(500, {message: 'Error en la base de datos'});
     }
 }
 
 module.exports = {
         get:(data, callback) => {
-            const {id} = data;
-            connection.query('SELECT * FROM publicaciones', (err, rows) => {
-                checkError(err);
-                if(id){
-                    let find = false;
-                    if(isNaN(parseInt(id))){
-                        const ciudad = decodeURIComponent(id)
-                        rows.filter( (publicacion) => {
-                            if (publicacion.img == ciudad) {
-                                find = true;
-                                return callback (200, publicacion)
+            const ciudad = decodeURIComponent(data.id)
+            const query = 'SELECT c.nombre as ciudad, p.id as id, p.img as image, c.id as ciudadId, p.provinciaId as provinciaId, p.text AS text '+ 
+                'FROM publicaciones p ' +
+                'INNER JOIN ciudades c ON p.ciudadId = c.id ';
+            connection.query(query, ciudad, (err,rows) => {
+                    checkError(err);
+                    if(ciudad != 'null'){
+                        let find = false
+                        rows.filter((response) => {
+                            if(response.ciudad == ciudad){
+                                find = true
+                                return callback(200, response);
                             }
                         })
-                    } else {
-                        rows.filter( (publicacion) => {
-                            if (publicacion.id == id) {
-                                find = true;
-                                return callback (200, publicacion)
-                            }
-                        })
+                        if(!find){
+                            return callback(404, {message:'Publicación no encontrada'})
+                        }
+                    } else{
+                        callback(200, rows);
                     }
-                    if(!find){
-                        callback (404, {message:'Publicacion no encontrada'})
-                        return
-                    }
-                }else{
-                    callback (200, rows)
-                }
-            })
-        },
+                })
+            },
         post:(data, callback) => {
             const {texto, ciudad, provincia, img} = data.payload;
             connection.query('INSERT INTO publicaciones SET text = ?, '+
